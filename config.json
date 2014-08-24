@@ -1,8 +1,8 @@
 {
-    "port":29170,
+    "port":29179,
     "hubName":"/AccessMessageHub",
     "channels":[ "/access" ],
     "algorithm":"sha256",
-    "appkey":"d6527612-55e9-4e10-8d4c-2979a979928a"
+    "appkey":"b55d91a2-a68f-48a1-8f4b-c4dfc65d60bb"
 }
 
