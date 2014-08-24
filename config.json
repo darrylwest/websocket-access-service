@@ -1,5 +1,5 @@
 {
-    "port":29179,
+    "port":29169,
     "hubName":"/MessageHub",
     "channels":[ "/access" ],
     "algorithm":"sha256",

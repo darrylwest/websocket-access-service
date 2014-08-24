@@ -6,6 +6,7 @@ var config = require( __dirname + '/../config.json'),
     
 // don't run in background...
 config.daemon = false;
+console.log('message hub: ', config.hubName);
 
 service = AccessService.createInstance( config );
 service.start();
