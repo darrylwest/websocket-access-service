@@ -1,7 +1,7 @@
 /**
+ * Standard build
  *
- *
- * @author: darryl.west@roundpeg.com
+ * @author: darryl.west@raincitysoftware.com
  * @created: 12/30/13 9:30 AM
  */
 module.exports = function(grunt) {
@@ -19,9 +19,7 @@ module.exports = function(grunt) {
                 files:[
                     'index.js',
                     '<%= dirs.lib %>/*.js',
-                    '<%= dirs.lib %>/*/*.js',
-                    '<%= dirs.test %>/*.js',
-                    '<%= dirs.test %>/*/*.js'
+                    '<%= dirs.test %>/*.js'
                 ],
                 tasks: [
                     'mochaTest',
@@ -42,9 +40,7 @@ module.exports = function(grunt) {
                 'Gruntfile.js',
                 'index.js',
                 '<%= dirs.lib %>/*.js',
-                '<%= dirs.lib %>/*/*.js',
-                '<%= dirs.test %>/*.js',
-                '<%= dirs.test %>/*/*.js'
+                '<%= dirs.test %>/*.js'
             ]
         },
         mochaTest: {
@@ -53,8 +49,7 @@ module.exports = function(grunt) {
                     reporter: 'spec'
                 },
                 src: [
-                    '<%= dirs.test %>/*.js',
-                    '<%= dirs.test %>/*/*.js'
+                    '<%= dirs.test %>/*.js'
                 ]
             }
         }

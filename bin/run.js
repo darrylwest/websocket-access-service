@@ -1,11 +1,12 @@
 #!/usr/bin/env node
 
-var config = require( __dirname + '/config' ).readAccessHubConfig(),
-    hub;
+var config = require( __dirname + '/../config.json'),
+    AccessService = require( __dirname + '/../index'),
+    service;
     
 // don't run in background...
 config.daemon = false;
 
-hub = require( __dirname + '/../index').createInstance( config );
-hub.start();
+service = AccessService.createInstance( config );
+service.start();
 

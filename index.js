@@ -1,4 +1,4 @@
 // message commons exposes methods to create the access hub
 
-module.exports = require('./lib/AccessHub');
+module.exports = require('./lib/AccessService');
 
