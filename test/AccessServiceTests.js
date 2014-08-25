@@ -7,12 +7,15 @@
 var should = require('chai').should(),
     dash = require('lodash'),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
-    MockMessageClient = require('node-messaging-commons').mocks.MockMessageClient,
+    UserAccessDataset = require('./fixtures/UserAccessDataset'),
+    // MockMessageClient = require('node-messaging-commons').mocks.MockMessageClient,
     AccessService = require('../lib/AccessService'),
     UserAccessDao = require('../lib/dao/UserAccessDao');
 
 describe('AccessService', function() {
     'use strict';
+
+    var dataset = new UserAccessDataset();
 
     var MockResponseRouter = function() {
         var opts = {};
@@ -45,6 +48,8 @@ describe('AccessService', function() {
         opts.hubName = 'AccessHub';
         opts.router = new MockResponseRouter();
 
+        opts.id = 'access-service-id';
+
         return opts;
     };
 
@@ -54,8 +59,9 @@ describe('AccessService', function() {
                 'start',
                 'shutdown',
                 'broadcastCurrentToken',
-                'routeMessage',
-                'messageHandler'
+                'messageHandler',
+                'getCurrentToken',
+                '__protected'
             ];
 
         it('should create an instance of AccessService', function() {
@@ -71,9 +77,56 @@ describe('AccessService', function() {
         });
     });
 
+    describe('broadcastCurrentToken', function() {
+        var service = new AccessService( createOptions());
+
+        it('should create the current token', function() {
+            var token = service.broadcastCurrentToken();
+
+            should.exist( token );
+            token.should.equal( service.getCurrentToken() );
+        });
+    });
+
     describe('messageHandler', function() {
-        it('should accept and route a client message with current token');
-        it('should ignore a message if token has expired');
-        it('should ignore a producer message');
+        var opts = createOptions(),
+            service = new AccessService( opts ),
+            user = dataset.createKnownUser();
+
+        it('should accept and route a client message with current token', function() {
+            var request = {},
+                message;
+
+            request.user = user;
+            request.token = service.broadcastCurrentToken();
+            message = dataset.wrapRequestMessage( request );
+
+            service.messageHandler( message).should.equal( true );
+        });
+
+        it('should ignore a message if token has expired', function() {
+            var request = {},
+                message;
+
+            request.user = user;
+            request.token = service.broadcastCurrentToken();
+            request.token = 'old-token';
+
+            message = dataset.wrapRequestMessage( request );
+
+            service.messageHandler( message).should.equal( false );
+        });
+
+        it('should ignore a producer message', function() {
+            var request = {},
+                message;
+
+            request.user = user;
+            request.token = service.broadcastCurrentToken();
+
+            message = dataset.wrapRequestMessage( request, opts.id );
+
+            service.messageHandler( message).should.equal( false );
+        });
     });
 });

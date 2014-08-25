@@ -38,6 +38,29 @@ var UserAccessDataset = function() {
 
         return users;
     };
+
+    this.wrapRequestMessage = function(request, ssid) {
+        var wrapper = {};
+
+        wrapper.ts = Date.now();
+        wrapper.version = '1.0';
+        if (ssid) {
+            wrapper.ssid = ssid;
+        }
+        wrapper.message = request;
+
+        return wrapper;
+    };
+
+    this.createKnownUser = function() {
+        var user = {};
+
+        user.id = '87e13515b2a54f1aaee72d076bea7fb2';
+        user.session = '71e8ad9c-a4f5-403f-a9bc-cce6318a01e2';
+        user.hash = 'the-password-hash';
+
+        return user;
+    };
 };
 
 module.exports = UserAccessDataset;
