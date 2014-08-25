@@ -19,6 +19,8 @@ module.exports = function(grunt) {
                 files:[
                     'index.js',
                     '<%= dirs.lib %>/*.js',
+                    '<%= dirs.lib %>/*/*.js',
+                    '<%= dirs.test %>/*/*.js',
                     '<%= dirs.test %>/*.js'
                 ],
                 tasks: [
@@ -40,6 +42,8 @@ module.exports = function(grunt) {
                 'Gruntfile.js',
                 'index.js',
                 '<%= dirs.lib %>/*.js',
+                '<%= dirs.lib %>/*/*.js',
+                '<%= dirs.test %>/*/*.js',
                 '<%= dirs.test %>/*.js'
             ]
         },
@@ -49,6 +53,7 @@ module.exports = function(grunt) {
                     reporter: 'spec'
                 },
                 src: [
+                    '<%= dirs.test %>/*/*.js',
                     '<%= dirs.test %>/*.js'
                 ]
             }
