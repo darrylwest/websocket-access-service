@@ -20,8 +20,8 @@ var UserAccessDataset = function() {
         var user = {
             id:dataset.createId(),
             name:casual.name,
-            session:'',
-            hash:''
+            session:uuid.v4(),
+            hash:casual.word
         };
 
         return user;

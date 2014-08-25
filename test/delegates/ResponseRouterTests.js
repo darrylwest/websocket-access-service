@@ -1,8 +1,8 @@
 /**
- * @class UserAccessDaoTests
+ * @class ResponseRouterTests
  *
  * @author: darryl.west@raincitysoftware.com
- * @created: 8/24/14
+ * @created: 8/25/14
  */
 var should = require('chai').should(),
     dash = require('lodash'),
@@ -10,7 +10,7 @@ var should = require('chai').should(),
     UserAccessDataset = require('../fixtures/UserAccessDataset'),
     UserAccessDao = require('../../lib/dao/UserAccessDao');
 
-describe('UserAccessDao', function() {
+describe('ResponseRouter', function() {
     'use strict';
 
     var dataset = new UserAccessDataset(),
@@ -42,25 +42,6 @@ describe('UserAccessDao', function() {
             methods.forEach(function(method) {
                 dao[ method ].should.be.a('function');
             });
-        });
-    });
-
-    describe('findUserById', function() {
-        var dao = new UserAccessDao( createOptions() );
-
-        it('should find known users', function(done) {
-            var id = users[3].id;
-
-            var callback = function(err, user) {
-                should.not.exist( err );
-                should.exist( user );
-
-                user.id.should.equal( id );
-
-                done();
-            };
-
-            dao.findUserById( id, callback );
         });
     });
 });
