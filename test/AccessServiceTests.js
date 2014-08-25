@@ -9,7 +9,9 @@ var should = require('chai').should(),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     UserAccessDataset = require('./fixtures/UserAccessDataset'),
     // MockMessageClient = require('node-messaging-commons').mocks.MockMessageClient,
+    MessageHub = require('node-messaging-commons'),
     AccessService = require('../lib/AccessService'),
+    ResponseRouter = require('../lib/delegates/ResponseRouter'),
     UserAccessDao = require('../lib/dao/UserAccessDao');
 
 describe('AccessService', function() {
@@ -17,36 +19,40 @@ describe('AccessService', function() {
 
     var dataset = new UserAccessDataset();
 
-    var MockResponseRouter = function() {
-        var opts = {};
-
-        opts.log = MockLogger.createLogger('ResponseRouter');
-        opts.dao = new MockUserAccessDao();
-
-        opts.routeMessage = function(request) {
-            console.log('route message: ', JSON.stringify( request ));
-        };
-
-        return opts; // new ResponseRouter( opts );
-    };
-
-    var MockUserAccessDao = function() {
-
+    var createUserAccessDao = function() {
         var opts = {};
 
         opts.log = MockLogger.createLogger('UserAccessDao');
-        opts.users = {};
+        opts.users = dataset.createUserList();
 
         return new UserAccessDao( opts );
+    };
+
+    var createResponseRouter = function() {
+        var opts = {};
+
+        opts.log = MockLogger.createLogger('ResponseRouter');
+        opts.dao = createUserAccessDao();
+
+        return new ResponseRouter( opts );
+    };
+
+    var createMessageHub = function() {
+        var opts = {};
+
+        opts.log = MockLogger.createLogger('MessageHub');
+        opts.port = 12345;
+        opts.hubName = 'AccessHub';
+
+        return MessageHub.createInstance( opts );
     };
 
     var createOptions = function() {
         var opts = {};
 
         opts.log = MockLogger.createLogger('AccessService');
-        opts.port = 12345;
-        opts.hubName = 'AccessHub';
-        opts.router = new MockResponseRouter();
+        opts.router = createResponseRouter();
+        opts.hub = createMessageHub();
 
         opts.id = 'access-service-id';
 
