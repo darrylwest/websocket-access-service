@@ -57,6 +57,8 @@ describe('AccessService', function() {
         var service = new AccessService( createOptions()),
             methods = [
                 'start',
+                'createProducer',
+                'createIntervalThread',
                 'shutdown',
                 'broadcastCurrentToken',
                 'messageHandler',
@@ -74,6 +76,28 @@ describe('AccessService', function() {
             methods.forEach(function(method) {
                 service[ method ].should.be.a('function');
             });
+        });
+    });
+
+    describe('start', function() {
+        var service = new AccessService( createOptions());
+
+        it('should create the producer and interval thread', function() {
+            var producerCreated = false,
+                intervalCreated = false;
+
+            service.createProducer = function() {
+                producerCreated = true;
+            };
+
+            service.createIntervalThread = function() {
+                intervalCreated = true;
+            };
+
+            service.start();
+
+            producerCreated.should.equal( true );
+            intervalCreated.should.equal( true );
         });
     });
 
@@ -102,6 +126,8 @@ describe('AccessService', function() {
             message = dataset.wrapRequestMessage( request );
 
             service.messageHandler( message).should.equal( true );
+
+            request.token.should.not.equal( service.getCurrentToken() );
         });
 
         it('should ignore a message if token has expired', function() {
