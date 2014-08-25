@@ -21,7 +21,17 @@ The Websocket Access Service uses [tokenized gated messaging](http://blog.rainci
 
 
 
-## Use
+## Client Use
+
+- create access channel consumer
+- create private channel producer
+- wait for access token and send request to listen using user id
+- broadcast data on private channel
+- wait for response (with timeout)
+- on positive response, do action A
+- on negative response, do action B
+- on timeout, re-broadcast and wait
+
 
 ### Server
 

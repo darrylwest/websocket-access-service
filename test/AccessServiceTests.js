@@ -14,6 +14,19 @@ var should = require('chai').should(),
 describe('AccessService', function() {
     'use strict';
 
+    var MockResponseRouter = function() {
+        var opts = {};
+
+        opts.log = MockLogger.createLogger('ResponseRouter');
+        opts.dao = new MockUserAccessDao();
+
+        opts.routeMessage = function(request) {
+            console.log('route message: ', JSON.stringify( request ));
+        };
+
+        return opts; // new ResponseRouter( opts );
+    };
+
     var MockUserAccessDao = function() {
 
         var opts = {};
@@ -30,7 +43,7 @@ describe('AccessService', function() {
         opts.log = MockLogger.createLogger('AccessService');
         opts.port = 12345;
         opts.hubName = 'AccessHub';
-        opts.dao = new MockUserAccessDao();
+        opts.router = new MockResponseRouter();
 
         return opts;
     };
@@ -58,13 +71,9 @@ describe('AccessService', function() {
         });
     });
 
-    describe('routeMessage', function() {
-        it('should route a message request');
-        it('should reject an unknown action');
-    });
-
-    describe('messageHander', function() {
-        it('should accept and route a client message');
-        it('should reject a producer message');
+    describe('messageHandler', function() {
+        it('should accept and route a client message with current token');
+        it('should ignore a message if token has expired');
+        it('should ignore a producer message');
     });
 });
