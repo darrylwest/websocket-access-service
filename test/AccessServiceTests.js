@@ -8,23 +8,20 @@ var should = require('chai').should(),
     dash = require('lodash'),
     MockLogger = require('simple-node-logger').mocks.MockLogger,
     MockMessageClient = require('node-messaging-commons').mocks.MockMessageClient,
-    AccessService = require('../lib/AccessService');
+    AccessService = require('../lib/AccessService'),
+    UserAccessDao = require('../lib/dao/UserAccessDao');
 
 describe('AccessService', function() {
     'use strict';
 
-    var MockUserService = function() {
+    var MockUserAccessDao = function() {
 
-        this.getUserById = function(id) {
-            // TODO create an AccessUser model?
-            var user = {
-                id:id,
-                session:'my-user-session',
-                pwhash:'hash'
-            };
+        var opts = {};
 
-            return user;
-        };
+        opts.log = MockLogger.createLogger('UserAccessDao');
+        opts.users = {};
+
+        return new UserAccessDao( opts );
     };
 
     var createOptions = function() {
@@ -33,7 +30,7 @@ describe('AccessService', function() {
         opts.log = MockLogger.createLogger('AccessService');
         opts.port = 12345;
         opts.hubName = 'AccessHub';
-        opts.userService = new MockUserService();
+        opts.dao = new MockUserAccessDao();
 
         return opts;
     };
@@ -44,6 +41,7 @@ describe('AccessService', function() {
                 'start',
                 'shutdown',
                 'broadcastCurrentToken',
+                'routeMessage',
                 'messageHandler'
             ];
 
@@ -58,5 +56,15 @@ describe('AccessService', function() {
                 service[ method ].should.be.a('function');
             });
         });
+    });
+
+    describe('routeMessage', function() {
+        it('should route a message request');
+        it('should reject an unknown action');
+    });
+
+    describe('messageHander', function() {
+        it('should accept and route a client message');
+        it('should reject a producer message');
     });
 });
