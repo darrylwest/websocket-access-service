@@ -38,7 +38,7 @@ describe('ResponseRouter', function() {
     describe('#instance', function() {
         var router = new ResponseRouter( createOptions()),
             methods = [
-                'routeMessage',
+                'routeRequest',
                 'responseCallback',
                 'openPrivateChannel',
                 'authenticate'
