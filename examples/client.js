@@ -16,7 +16,8 @@ var dash = require('lodash'),
 var createPrivateChannel = function() {
     console.log('create the private channel for: ', JSON.stringify( user ));
 
-    producer = hub.createProducer( user.privateChannel, user.session ),
+    producer = hub.createProducer( user.privateChannel, user.session );
+
     producer.onMessage(function(msg) {
         consumer('p<< ', msg);
 
@@ -80,7 +81,7 @@ setTimeout(function() {
     var request = {};
 
     request.user = user;
-    request.action = 'listen';
+    request.action = 'openPrivateChannel';
 
     consumerQueue.push( request );
 }, 2500);
