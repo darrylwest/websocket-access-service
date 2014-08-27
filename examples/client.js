@@ -9,9 +9,10 @@ var dash = require('lodash'),
     consumer = hub.createConsumer( AccessService.DEFAULT_CHANNEL ),
     producer,
     consumerQueue = [],
-    producerQueue = [],
+    authMessage,
     users = require( __dirname + '/../users.json' ),
-    user = users[ 0 ];
+    user = users[ 0 ],
+    messageCount = 0;
 
 var createPrivateChannel = function() {
     console.log('create the private channel for: ', user.privateChannel );
@@ -23,10 +24,15 @@ var createPrivateChannel = function() {
             console.log('p<< ', msg);
 
             // simply exit on any message received
-            process.nextTick(function() {
-                console.log('^^ private message received, process exiting...');
-                // process.exit();
-            });
+            var status = msg.message.status;
+            if (status === 'ready') {
+                sendPrivateMessage( authMessage );
+            } else {
+                process.nextTick(function() {
+                    console.log('^^ private message received, process exiting...');
+                    process.exit();
+                });
+            }
         }
     });
 };
@@ -38,12 +44,20 @@ var sendPrivateMessage = function(request) {
 
     setTimeout(function() {
         console.error('!! private channel message timed out, re-send...');
-        process.exit(1);
 
-    }, 5000);
+        messageCount++;
+
+        if (messageCount < 3) {
+            console.log('re-transmit request');
+            sendPrivateMessage( request );
+        } else {
+            process.exit(1);
+        }
+
+    }, 2000);
 };
 
-var queuePrivateMessage = function() {
+var createAuthMessage = function() {
     var request = {};
 
     request.user = user;
@@ -52,7 +66,7 @@ var queuePrivateMessage = function() {
     request.hash = user.hash;
     request.action = 'authenticate';
 
-    producerQueue.push( request );
+    authMessage = request;
 };
 
 consumer.onConnect(function(chan) {
@@ -72,21 +86,12 @@ consumer.onMessage(function(msg) {
         console.log('c<< ', JSON.stringify( request ));
         consumer.publish( request );
 
-        process.nextTick(function() {
-            queuePrivateMessage();
-        });
-    } else if (producerQueue.length > 0) {
-        console.log('producer queue length: ', producerQueue.length);
-        var request = producerQueue.pop();
-        request.token = msg.message.token;
-
-        sendPrivateMessage( request );
+        createAuthMessage();
     }
 });
 
 // wait to simulate a login process
 setTimeout(function() {
-    createPrivateChannel();
 
     var request = {};
 
@@ -96,3 +101,5 @@ setTimeout(function() {
     consumerQueue.push( request );
 }, 1000);
 
+// create the private producer channel first
+createPrivateChannel();

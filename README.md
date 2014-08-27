@@ -1,9 +1,9 @@
 # Websocket Access Service
 - - -
 
-[![Build Status](https://travis-ci.org/darrylwest/websocket-access-service.svg?branch=master)](https://travis-ci.org/darrylwest/websocket-access-service)
-
 A non-traditional access service that leverages websockets to provide user authentication.
+
+[![Build Status](https://travis-ci.org/darrylwest/websocket-access-service.svg?branch=master)](https://travis-ci.org/darrylwest/websocket-access-service)
 
 ## Introduction
 
@@ -23,8 +23,10 @@ The Websocket Access Service uses [tokenized gated messaging](http://blog.rainci
 
 ## Client Use
 
+There is an example server side client that demonstrates how the access logic works.  It involves reading from the access channel, then sending a request for a private channel, and finally sending an authenticate request over the private channel to get a yes/no response.  Here are the steps...
+
 - create consumer access channel
-- prompt for password
+- prompt for password (simulated)
 - create private producer channel
 - wait for access token and send request to listen on private channel
 - broadcast data on private channel
@@ -32,8 +34,7 @@ The Websocket Access Service uses [tokenized gated messaging](http://blog.rainci
 - on response, close the private channel
 - on positive response, do action A
 - on negative response, do action B
-- on timeout, re-broadcast and wait
-
+- on timeout, exit with error
 
 ### Server
 

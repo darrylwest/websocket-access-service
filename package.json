@@ -26,7 +26,7 @@
     "faye": "^1.0.3",
     "lodash": "~2.4.1",
     "moment": "^2.8.1",
-    "node-messaging-commons": "^0.90.25",
+    "node-messaging-commons": "^0.90.29",
     "node-uuid": "~1.4.1",
     "simple-node-logger": "^0.91.96"
   },
