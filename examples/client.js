@@ -10,6 +10,7 @@ var dash = require('lodash'),
     producer,
     consumerQueue = [],
     authMessage,
+    accessToken,
     users = require( __dirname + '/../users.json' ),
     user = users[ 0 ],
     messageCount = 0;
@@ -54,16 +55,16 @@ var sendPrivateMessage = function(request) {
             process.exit(1);
         }
 
-    }, 2000);
+    }, 4000);
 };
 
 var createAuthMessage = function() {
     var request = {};
 
-    request.user = user;
+    console.log('access key: ', user.accessKey, ', token: ', accessToken );
 
-    // for the 
-    request.hash = user.hash;
+    // create a message hash for the access key and send: createDigest
+    request.hash = producer.calculateDigest( user.accessKey, accessToken );
     request.action = 'authenticate';
 
     authMessage = request;
@@ -81,7 +82,7 @@ consumer.onMessage(function(msg) {
         var request = consumerQueue.pop();
 
         // pass the latest/current token
-        request.token = msg.message.token;
+        accessToken = request.token = msg.message.token;
 
         console.log('c<< ', JSON.stringify( request ));
         consumer.publish( request );
@@ -90,16 +91,12 @@ consumer.onMessage(function(msg) {
     }
 });
 
-// wait to simulate a login process
-setTimeout(function() {
 
-    var request = {};
-
-    request.user = user;
-    request.action = 'openPrivateChannel';
-
-    consumerQueue.push( request );
-}, 1000);
-
-// create the private producer channel first
+// open the private channel; create and queue the open private channel request
 createPrivateChannel();
+var request = {};
+
+request.user = { id:user.id, session:user.session };
+request.action = 'openPrivateChannel';
+
+consumerQueue.push( request );

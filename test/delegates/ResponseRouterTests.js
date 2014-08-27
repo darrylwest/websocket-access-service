@@ -40,7 +40,6 @@ describe('ResponseRouter', function() {
         var router = new ResponseRouter( createOptions()),
             methods = [
                 'routeRequest',
-                'responseCallback',
                 'openPrivateChannel',
                 'authenticate'
             ];
