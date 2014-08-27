@@ -40,8 +40,7 @@ describe('ResponseRouter', function() {
         var router = new ResponseRouter( createOptions()),
             methods = [
                 'routeRequest',
-                'openPrivateChannel',
-                'authenticate'
+                'openPrivateChannel'
             ];
 
         it('should create an instance of ResponseRouter', function() {
