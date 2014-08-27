@@ -64,7 +64,9 @@ var createAuthMessage = function() {
     console.log('access key: ', user.accessKey, ', token: ', accessToken );
 
     // create a message hash for the access key and send: createDigest
+    request.id = user.id;
     request.hash = producer.calculateDigest( user.accessKey, accessToken );
+    request.session = user.session;
     request.action = 'authenticate';
 
     authMessage = request;

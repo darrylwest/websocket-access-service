@@ -63,7 +63,9 @@ var createAuthMessage = function() {
     request.user = user;
 
     // for the 
+    request.id = user.id;
     request.hash = 'bad-hash';
+    request.session = user.session;
     request.action = 'authenticate';
 
     authMessage = request;

@@ -28,7 +28,8 @@ describe('UserAccessDao', function() {
     describe('#instance', function() {
         var dao = new UserAccessDao( createOptions()),
             methods = [
-                'findUserById'
+                'findUserById',
+                'authenticate'
             ];
 
         it('should create an instance of AccessService', function() {
