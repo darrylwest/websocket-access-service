@@ -33,6 +33,7 @@ describe('AccessService', function() {
 
         opts.log = MockLogger.createLogger('ResponseRouter');
         opts.dao = createUserAccessDao();
+        opts.hub = {};
 
         return new ResponseRouter( opts );
     };

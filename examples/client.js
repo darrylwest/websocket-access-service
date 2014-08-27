@@ -14,23 +14,30 @@ var dash = require('lodash'),
     user = users[ 0 ];
 
 var createPrivateChannel = function() {
-    console.log('create the private channel for: ', JSON.stringify( user ));
+    console.log('create the private channel for: ', user.privateChannel );
 
     producer = hub.createProducer( user.privateChannel, user.session );
 
     producer.onMessage(function(msg) {
-        consumer('p<< ', msg);
+        if (msg.ssid !== user.session) {
+            console.log('p<< ', msg);
 
-        process.nextTick(function() {
-            process.exit();
-        });
+            // simply exit on any message received
+            process.nextTick(function() {
+                console.log('^^ private message received, process exiting...');
+                // process.exit();
+            });
+        }
     });
 };
 
 var sendPrivateMessage = function(request) {
+    console.log('send the private message: ', JSON.stringify( request ));
+
     producer.publish( request );
+
     setTimeout(function() {
-        console.log('private channel message timed out...');
+        console.error('!! private channel message timed out, re-send...');
         process.exit(1);
 
     }, 5000);
@@ -43,17 +50,18 @@ var queuePrivateMessage = function() {
 
     // for the 
     request.hash = user.hash;
-    request.action = 'login';
+    request.action = 'authenticate';
 
     producerQueue.push( request );
 };
 
 consumer.onConnect(function(chan) {
-    console.log('c>> connected: ', chan);
+    console.log('c>> connected to access service: ', chan);
 });
 
+// consumer messages trigger sending a private message request
 consumer.onMessage(function(msg) {
-    console.log( 'c>> ', JSON.stringify( msg ));
+    // console.log( 'c>> ', JSON.stringify( msg ));
 
     if (consumerQueue.length > 0) {
         var request = consumerQueue.pop();
@@ -68,6 +76,7 @@ consumer.onMessage(function(msg) {
             queuePrivateMessage();
         });
     } else if (producerQueue.length > 0) {
+        console.log('producer queue length: ', producerQueue.length);
         var request = producerQueue.pop();
         request.token = msg.message.token;
 
@@ -75,6 +84,7 @@ consumer.onMessage(function(msg) {
     }
 });
 
+// wait to simulate a login process
 setTimeout(function() {
     createPrivateChannel();
 
@@ -84,5 +94,5 @@ setTimeout(function() {
     request.action = 'openPrivateChannel';
 
     consumerQueue.push( request );
-}, 2500);
+}, 1000);
 
