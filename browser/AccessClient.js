@@ -10,12 +10,104 @@ var AccessClient = function(options) {
 
     var client = this,
         log = options.log,
-        createDigest = options.createDigest,
         user = options.user,
         socketHost = options.socketHost,
         hub,
+        accessQueue = [],
         accessChannel,
-        privateChannel;
+        privateChannel,
+        accessToken;
+
+    this.start = function() {
+        this.openAccessChannel();
+        this.openPrivateChannel();
+    };
+
+    this.openAccessChannel = function() {
+        var channel = '/access';
+
+        log.info('open the access channel: ', channel);
+
+        accessChannel = client.createHub().subscribe( channel, client.accessMessageHandler );
+        accessChannel.then(function() {
+            log.info('access channel alive...');
+        });
+
+        return accessChannel;
+    };
+
+    this.openPrivateChannel = function() {
+        var channel = user.privateChannel;
+
+        log.info('open the private channel: ', channel);
+
+        privateChannel = client.createHub().subscribe( channel, client.privateMessageHandler );
+        privateChannel.then(function() {
+            log.info('private channel alive...');
+        });
+    };
+
+    this.accessMessageHandler = function(msg) {
+        window.lastAccessMessage = msg;
+
+        if (accessQueue.length > 0) {
+            var request = accessQueue.pop();
+
+            // grab the current token
+            accessToken = request.token = msg.message.token;
+            log.info( JSON.stringify( request ) );
+
+            accessToken.publish( request );
+
+            // now create and queue the private channel
+
+        }
+    };
+
+    this.privateMessageHandler = function(msg) {
+        log.info( 'p-msg: ', JSON.stringify( msg ));
+
+        var status = msg.message.status;
+        if (status) {
+            switch (status) {
+                case 'ready':
+                    break;
+                case 'ok':
+                    break;
+                case 'failed':
+                    break;
+            }
+        }
+    };
+
+    this.createAuthMessage = function() {
+        log.info('access key: ', user.accessKey, ', token: ', accessToken );
+
+        var request = {};
+
+        // create a message hash for the access key and send: createDigest
+        request.id = user.id;
+        request.hash = client.calculateDigest( user.accessKey, accessToken );
+        request.session = user.session;
+        request.action = 'authenticate';
+
+        return request;
+    };
+
+    this.setUserAccessKey = function(key) {
+        user.accessKey = client.calculateDigest( key, user.privateChannel );
+        log.info('hash: ', user.accessKey);
+    };
+
+    this.calculateDigest = function(value, key) {
+        var hash,
+            hmac = CryptoJS.algo.HMAC.create( CryptoJS.algo.SHA256, key );
+
+        hmac.update( value );
+        hash = hmac.finalize();
+
+        return hash.toString( CryptoJS.enc.Hex );
+    };
 
     this.createHub = function() {
         if (!hub) {
@@ -25,54 +117,21 @@ var AccessClient = function(options) {
         return hub;
     };
 
-    this.openAccessChannel = function() {
-        log.info('open the access channel');
-
-        accessChannel = client.createHub().subscribe( '/access', client.accessMessageHandler );
-        accessChannel.then(function() {
-            accessChannel.ready = true;
-        });
-
-        return accessChannel;
-    };
-
-    this.accessMessageHandler = function(msg) {
-        log.debug( JSON.stringify( msg ));
-
-        
-    };
-
-    this.openPrivateChannel = function() {
-        log.info('create the private channel');
-    };
-
-    this.createAuthMessage = function() {
-        log.info('create the auth request message');
-    };
-
     // constructor validations
     if (!log) throw new Error('access client must be constructed with a log');
     if (!user) throw new Error('access client must be constructed with a user');
 };
 
-AccessClient.createInstance = function() {
+AccessClient.createInstance = function(opts) {
     'use strict';
 
-    var opts = {};
+    if (!opts) opts = {};
 
     opts.version = '2014.08.28';
 
     opts.log = RemoteLogger.createLogger('AccessClient');
-    opts.createDigest = function(key) {
-        return CryptoJS.algo.HMAC.create( CryptoJS.algo.SHA256, key );
-    };
 
     // simulate an ajax fetch...
-    opts.user  = {
-        id:'33e2c605f0334ce7a455ec8f6a60e063',
-        session:'2a7f543a-5a4e-44db-a150-b653852ed0c0',
-        privateChannel:'/44C4UUX'
-    };
 
     opts.host = 'http://localhost:29169';
     opts.hubName = '/MessageHub';
@@ -82,3 +141,7 @@ AccessClient.createInstance = function() {
 
     return new AccessClient( opts );
 };
+
+if (typeof module === 'object') {
+    module.exports = AccessClient;
+}

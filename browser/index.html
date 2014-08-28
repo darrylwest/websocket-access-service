@@ -6,8 +6,24 @@
     <script src="RemoteLogger.js"></script>
     <script src="hmac-sha256.js"></script>
     <script src="AccessClient.js"></script>
+    <script>
+        var startAccessClient = function() {
+            var opts = {};
+            opts.user  = {
+                id:'33e2c605f0334ce7a455ec8f6a60e063',
+                session:'2a7f543a-5a4e-44db-a150-b653852ed0c0',
+                privateChannel:'/44C4UUX'
+            };
+
+            client = AccessClient.createInstance( opts );
+
+            window.client = client;
+        };
+    </script>
 </head>
-<body>
+<body onload="startAccessClient();">
+
+<!-- create text input box and go button -->
 
 </body>
 </html>
