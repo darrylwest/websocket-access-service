@@ -26,6 +26,10 @@
     "white": false,
     "curly": false,
     "globals": {
+        "RemoteLogger":true,
+        "CryptoJS":true,
+        "Faye":true,
+        "AccessClient":true,
         "describe":true,
         "should":true,
         "it":true,

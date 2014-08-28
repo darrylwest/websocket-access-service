@@ -12,6 +12,7 @@ module.exports = function(grunt) {
     grunt.initConfig({
         dirs: {
             lib:'lib',
+            ex:'examples',
             test: 'test'
         },
         watch:{
@@ -21,7 +22,8 @@ module.exports = function(grunt) {
                     '<%= dirs.lib %>/*.js',
                     '<%= dirs.lib %>/*/*.js',
                     '<%= dirs.test %>/*/*.js',
-                    '<%= dirs.test %>/*.js'
+                    '<%= dirs.test %>/*.js',
+                    '<%= dirs.ex %>/*.js'
                 ],
                 tasks: [
                     'mochaTest',
@@ -44,7 +46,8 @@ module.exports = function(grunt) {
                 '<%= dirs.lib %>/*.js',
                 '<%= dirs.lib %>/*/*.js',
                 '<%= dirs.test %>/*/*.js',
-                '<%= dirs.test %>/*.js'
+                '<%= dirs.test %>/*.js',
+                '<%= dirs.ex %>/AccessClient.js'
             ]
         },
         mochaTest: {
