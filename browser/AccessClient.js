@@ -38,7 +38,7 @@ var AccessClient = function(options) {
 
 AccessClient.createInstance = function() {
     'use strict';
-    
+
     var opts = {};
 
     opts.log = RemoteLogger.createLogger('AccessClient');
