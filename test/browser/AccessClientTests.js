@@ -27,9 +27,11 @@ describe('AccessClient', function() {
     describe('#instance', function() {
         var client = new AccessClient( createOptions()),
             methods = [
-                'start',
+                'authenticate',
                 'openAccessChannel',
                 'openPrivateChannel',
+                'wrapMessage',
+                'sendPrivateMessage',
                 'accessMessageHandler',
                 'privateMessageHandler',
                 'createAuthMessage',

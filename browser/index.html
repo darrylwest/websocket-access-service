@@ -7,7 +7,18 @@
     <script src="hmac-sha256.js"></script>
     <script src="AccessClient.js"></script>
     <script>
+        var client;
+
+        var accessClickHandler = function() {
+            // set the password as entered by the user
+            client.setUserAccessKey( 'fire-fighter3' );
+
+            // start the websocket process
+            client.authenticate();
+        };
+
         var startAccessClient = function() {
+            // simulate finding a user with an active session
             var opts = {};
             opts.user  = {
                 id:'33e2c605f0334ce7a455ec8f6a60e063',
@@ -15,8 +26,10 @@
                 privateChannel:'/44C4UUX'
             };
 
+            // create the access client instance with user object
             client = AccessClient.createInstance( opts );
 
+            // make available for debugging
             window.client = client;
         };
     </script>

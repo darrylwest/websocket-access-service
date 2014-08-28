@@ -12,55 +12,76 @@ var AccessClient = function(options) {
         log = options.log,
         user = options.user,
         socketHost = options.socketHost,
-        hub,
+        accessHub,
         accessQueue = [],
-        accessChannel,
-        privateChannel,
+        aid = Math.random().toString(19),
+        pid = Math.random().toString(19),
         accessToken;
 
-    this.start = function() {
+    this.authenticate = function() {
         this.openAccessChannel();
         this.openPrivateChannel();
     };
 
     this.openAccessChannel = function() {
-        var channel = '/access';
+        var hub = client.createHub(),
+            channel = hub.subscribe( '/access', client.accessMessageHandler );
 
         log.info('open the access channel: ', channel);
 
-        accessChannel = client.createHub().subscribe( channel, client.accessMessageHandler );
-        accessChannel.then(function() {
+        channel.then(function() {
             log.info('access channel alive...');
         });
 
-        return accessChannel;
+        return channel;
     };
 
     this.openPrivateChannel = function() {
-        var channel = user.privateChannel;
+        var hub = client.createHub(),
+            channel = hub.subscribe( user.privateChannel, client.privateMessageHandler );
 
         log.info('open the private channel: ', channel);
 
-        privateChannel = client.createHub().subscribe( channel, client.privateMessageHandler );
-        privateChannel.then(function() {
+        channel.then(function() {
             log.info('private channel alive...');
+            var request = {};
+
+            request.user = { id:user.id, session:user.session };
+            request.action = 'openPrivateChannel';
+
+            accessQueue.push( request );
         });
+
+        return channel;
+    };
+
+    this.wrapMessage = function(id, request) {
+        var message = {
+            ssid:id,
+            ts:Date.now(),
+            message:request
+        };
+
+        return message;
     };
 
     this.accessMessageHandler = function(msg) {
         window.lastAccessMessage = msg;
 
         if (accessQueue.length > 0) {
-            var request = accessQueue.pop();
+            var request = accessQueue.pop(),
+                message;
 
             // grab the current token
             accessToken = request.token = msg.message.token;
-            log.info( JSON.stringify( request ) );
 
-            accessToken.publish( request );
+            message = client.wrapMessage( aid, request );
+            log.info( JSON.stringify( message ) );
 
-            // now create and queue the private channel
+            accessHub.publish( '/access', message );
 
+            // now create and queue the private message
+            client.createAuthMessage();
         }
     };
 
@@ -71,13 +92,23 @@ var AccessClient = function(options) {
         if (status) {
             switch (status) {
                 case 'ready':
+                    client.sendPrivateMessage();
                     break;
                 case 'ok':
+                    log.info('load and show the main page');
                     break;
                 case 'failed':
+                    log.info('load and show the error page');
                     break;
             }
         }
+    };
+
+    this.sendPrivateMessage = function() {
+        var message = client.createAuthMessage();
+        log.info('send the authenticate message: ', JSON.stringify( message ));
+
+        accessHub.publish( user.privateChannel, message );
     };
 
     this.createAuthMessage = function() {
@@ -91,7 +122,7 @@ var AccessClient = function(options) {
         request.session = user.session;
         request.action = 'authenticate';
 
-        return request;
+        return client.wrapMessage( pid, request );
     };
 
     this.setUserAccessKey = function(key) {
@@ -110,11 +141,11 @@ var AccessClient = function(options) {
     };
 
     this.createHub = function() {
-        if (!hub) {
-            hub = new Faye.Client( socketHost, { timeout:10 });
+        if (!accessHub) {
+            accessHub = new Faye.Client( socketHost, { timeout:10 });
         }
 
-        return hub;
+        return accessHub;
     };
 
     // constructor validations
