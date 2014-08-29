@@ -20,14 +20,14 @@ var createPrivateChannel = function() {
     producer = hub.createProducer( user.privateChannel, user.session );
 
     producer.onMessage(function(msg) {
-        if (msg.ssid !== user.session) {
+        // simply exit on any message received
+        var status = msg.message.status;
+        if (status) {
             console.log('p<< ', msg);
-
-            // simply exit on any message received
-            var status = msg.message.status;
             if (status === 'ready') {
                 sendPrivateMessage( authMessage );
             } else {
+                console.log('status: ', status);
                 process.nextTick(function() {
                     console.log('^^ private message received, process exiting...');
                     process.exit();

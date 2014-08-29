@@ -14,8 +14,8 @@ var AccessClient = function(options) {
         socketHost = options.socketHost,
         accessHub,
         accessQueue = [],
-        aid = Math.random().toString(19),
-        pid = Math.random().toString(19),
+        aid = Math.random().toString(20),
+        pid = Math.random().toString(20),
         accessToken;
 
     this.authenticate = function() {
