@@ -128,6 +128,11 @@ var AccessClient = function(options) {
     this.setUserAccessKey = function(key) {
         user.accessKey = client.calculateDigest( key, user.privateChannel );
         log.info('hash: ', user.accessKey);
+        if (user.accessKey !== 'fad982743e558ad68da42ad49c3b489e9c15781f83052335c01f11930daf828b') {
+            log.error('keys do not match');
+        } else {
+            log.info('keys match');
+        }
     };
 
     this.calculateDigest = function(value, key) {

@@ -30,6 +30,7 @@ var createPrivateChannel = function() {
             } else {
                 process.nextTick(function() {
                     console.log('^^ private message received, process exiting...');
+                    consumer.close();
                     process.exit();
                 });
             }
