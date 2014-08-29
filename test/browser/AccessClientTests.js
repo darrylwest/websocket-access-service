@@ -32,6 +32,7 @@ describe('AccessClient', function() {
                 'openPrivateChannel',
                 'wrapMessage',
                 'sendPrivateMessage',
+                'closeSockets',
                 'accessMessageHandler',
                 'privateMessageHandler',
                 'createAuthMessage',
