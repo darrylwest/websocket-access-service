@@ -18,11 +18,17 @@ var AccessClient = function(options) {
         pid = Math.random().toString(20),
         accessToken;
 
+    /**
+     * open the public/private channels and begin exchanges
+     */
     this.authenticate = function() {
         this.openAccessChannel();
         this.openPrivateChannel();
     };
 
+    /**
+     * close all socket channels
+     */
     this.closeSockets = function() {
         var hub = client.createHub();
 
@@ -32,6 +38,11 @@ var AccessClient = function(options) {
         log.info('channels closed');
     };
 
+    /**
+     * open / subscribe to the public access channel
+     *
+     * @returns access channel
+     */
     this.openAccessChannel = function() {
         var hub = client.createHub(),
             channel = hub.subscribe( '/access', client.accessMessageHandler );
@@ -45,6 +56,10 @@ var AccessClient = function(options) {
         return channel;
     };
 
+    /**
+     * open the user's private channel
+     * @returns private channel
+     */
     this.openPrivateChannel = function() {
         var hub = client.createHub(),
             channel = hub.subscribe( user.privateChannel, client.privateMessageHandler );
@@ -64,6 +79,13 @@ var AccessClient = function(options) {
         return channel;
     };
 
+    /**
+     * create the standard wrapper
+     *
+     * @param id the channel id
+     * @param request a request object
+     * @returns the wrapped message request
+     */
     this.wrapMessage = function(id, request) {
         var message = {
             ssid:id,
@@ -74,9 +96,13 @@ var AccessClient = function(options) {
         return message;
     };
 
+    /**
+     * the public access channel message handler; grab the current token and queue
+     * the outgoing private message
+     *
+     * @param msg - a wrapped message request
+     */
     this.accessMessageHandler = function(msg) {
-        window.lastAccessMessage = msg;
-
         if (accessQueue.length > 0) {
             var request = accessQueue.pop(),
                 message;
@@ -94,6 +120,11 @@ var AccessClient = function(options) {
         }
     };
 
+    /**
+     * the private channel message response handler; processes ready, ok, and failed
+     *
+     * @param msg - a wrapped response
+     */
     this.privateMessageHandler = function(msg) {
         log.info( 'p-msg: ', JSON.stringify( msg ));
 
@@ -115,6 +146,9 @@ var AccessClient = function(options) {
         }
     };
 
+    /**
+     * send out the private message with encoded user pw
+     */
     this.sendPrivateMessage = function() {
         var message = client.createAuthMessage();
         log.info('send the authenticate message: ', JSON.stringify( message ));
@@ -122,6 +156,11 @@ var AccessClient = function(options) {
         accessHub.publish( user.privateChannel, message );
     };
 
+    /**
+     * creates the user's authentication message with the current access token, pw, etc
+     *
+     * @returns the wrapped message
+     */
     this.createAuthMessage = function() {
         log.info('access key: ', user.accessKey, ', token: ', accessToken );
 
@@ -136,11 +175,23 @@ var AccessClient = function(options) {
         return client.wrapMessage( pid, request );
     };
 
+    /**
+     * set the user's password as prompted from the UI
+     *
+     * @param key - the user password
+     */
     this.setUserAccessKey = function(key) {
         user.accessKey = client.calculateDigest( key, user.privateChannel );
         log.info('hash: ', user.accessKey);
     };
 
+    /**
+     * calculate a digestfrom value and key
+     *
+     * @param value - string value to encode
+     * @param key - key to use for encoding
+     * @returns {string}
+     */
     this.calculateDigest = function(value, key) {
         var hash,
             hmac = CryptoJS.algo.HMAC.create( CryptoJS.algo.SHA256, key),
