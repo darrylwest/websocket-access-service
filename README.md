@@ -90,7 +90,7 @@ The project includes a "bin" folder with a run/start/stop and status scripts.  T
     service.start();
 ~~~
 
-This is enough to start the public producer channel to periodically send out access tokens (one per second).
+If you have a message service running on this port, then this is enough to start the public producer channel to periodically send out access tokens (one per second).  To create and start a generic message service, see [this commons project](https://www.npmjs.org/package/node-messaging-commons).
 
 ## Configuration
 
@@ -146,4 +146,4 @@ Unit tests include should/specs, jshint and validate-package.  Tests can be run 
 ~~~
 
 - - -
-<p><small><em>Copyright © 2014, rain city software | Version 0.90.12</em></small></p>
+<p><small><em>Copyright © 2014, rain city software | Version 0.90.13</em></small></p>
