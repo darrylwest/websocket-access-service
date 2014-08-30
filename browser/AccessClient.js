@@ -186,11 +186,11 @@ var AccessClient = function(options) {
     };
 
     /**
-     * calculate a digestfrom value and key
+     * calculate a digest from value and key
      *
      * @param value - string value to encode
      * @param key - key to use for encoding
-     * @returns {string}
+     * @returns the encoded string
      */
     this.calculateDigest = function(value, key) {
         var hash,
