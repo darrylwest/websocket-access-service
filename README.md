@@ -3,8 +3,7 @@
 
 A non-traditional access service that leverages websockets to provide user authentication.
 
-[![NPM version](https://badge.fury.io/js/websocket-access-service.svg)](http://badge.fury.io/js/websocket-access-service)
-[![Build Status](https://travis-ci.org/darrylwest/websocket-access-service.svg?branch=master)](https://travis-ci.org/darrylwest/websocket-access-service)
+[![NPM version](https://badge.fury.io/js/websocket-access-service.svg)](http://badge.fury.io/js/websocket-access-service) [![Build Status](https://travis-ci.org/darrylwest/websocket-access-service.svg?branch=master)](https://travis-ci.org/darrylwest/websocket-access-service) [![Dependency Status](https://david-dm.org/darrylwest/websocket-access-service.svg)](https://david-dm.org/darrylwest/websocket-access-service)
 
 ## Introduction
 
@@ -147,4 +146,4 @@ Unit tests include should/specs, jshint and validate-package.  Tests can be run 
 ~~~
 
 - - -
-<p><small><em>Copyright © 2014, rain city software | Version 0.90.14</em></small></p>
+<p><small><em>Copyright © 2014, rain city software | Version 0.90.15</em></small></p>

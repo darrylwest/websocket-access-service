@@ -1,6 +1,6 @@
 {
   "name": "websocket-access-service",
-  "version": "00.90.14",
+  "version": "00.90.15",
   "description": "A non-traditional access service that leverages websockets to provide user authentication",
   "main": "index.js",
   "repository": {
