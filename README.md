@@ -28,8 +28,7 @@ Here is a short snippet of the browser code:
 <html>
 <head>
     <title>test access page</title>
-    <script src="faye-browser.js"></script>
-    <script src="RemoteLogger.js"></script>
+    <script src="browser-messaging-commons.js"></script>
     <script src="hmac-sha256.js"></script>
     <script src="AccessClient.js"></script>
     <script>
@@ -127,7 +126,8 @@ The project inclues a very basic sample of access users.  You would generate and
         "accessKey":"<key>"
     }
 ]
-~~
+~~~
+
 
 ## Tests
 
@@ -146,4 +146,4 @@ Unit tests include should/specs, jshint and validate-package.  Tests can be run 
 ~~~
 
 - - -
-<p><small><em>Copyright © 2014, rain city software | Version 0.90.19</em></small></p>
+<p><small><em>Copyright © 2014, rain city software | Version 0.90.20</em></small></p>
