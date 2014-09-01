@@ -146,4 +146,4 @@ Unit tests include should/specs, jshint and validate-package.  Tests can be run 
 ~~~
 
 - - -
-<p><small><em>Copyright © 2014, rain city software | Version 0.90.20</em></small></p>
+<p><small><em>Copyright © 2014, rain city software | Version 0.90.21</em></small></p>
