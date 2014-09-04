@@ -1,6 +1,7 @@
 /**
+ * @class UserAccessDataset
  *
- * @author: darryl.west@roundpeg.com
+ * @author: darryl.west@raincitysoftware.com
  * @created: 8/25/14
  */
 var dash = require('lodash'),
