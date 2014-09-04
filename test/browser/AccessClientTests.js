@@ -1,6 +1,7 @@
 /**
+ * @class AccessClient
  *
- * @author: darryl.west@roundpeg.com
+ * @author: darryl.west@raincitysoftware.com
  * @created: 8/28/14
  */
 var should = require('chai').should(),
