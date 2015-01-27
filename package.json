@@ -1,6 +1,6 @@
 {
   "name": "websocket-access-service",
-  "version": "00.90.24",
+  "version": "00.90.25",
   "description": "A non-traditional access service that leverages websockets to provide user authentication",
   "main": "index.js",
   "repository": {
@@ -21,12 +21,12 @@
     "producer/consumer"
   ],
   "dependencies": {
-    "background-service-runner": "^0.90.20",
-    "faye": "^1.0.3",
-    "lodash": "~2.4.1",
+    "background-service-runner": "^0.90.21",
+    "faye": "^1.1.0",
+    "lodash": "^3.0.0",
     "moment": "^2.8.4",
     "node-messaging-commons": "^0.90.35",
-    "node-uuid": "~1.4.2",
+    "node-uuid": "^1.4.2",
     "simple-node-logger": "^0.92.14"
   },
   "devDependencies": {
